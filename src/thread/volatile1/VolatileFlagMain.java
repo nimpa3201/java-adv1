@@ -22,8 +22,8 @@ public class VolatileFlagMain {
 
     static class MyTask implements Runnable {
 
-        boolean runFlag = true;
-        //volatile boolean runFlag = true;
+        //boolean runFlag = true;
+        volatile boolean runFlag = true;
 
         @Override
         public void run() {
@@ -36,14 +36,18 @@ public class VolatileFlagMain {
         }
 
         /**
-         *  13:50:45:024 [     main] runFlag = true
-         *  13:50:45:043 [     work] task 시작
-         *  13:50:46:047 [     main] runFlag를 false로 변경 시도
-         *  13:50:46:048 [     main] runFlag = false
+         *  14:29:25:017 [     main] runFlag = true
+         *  14:29:25:024 [     work] task 시작
+         *  14:29:26:027 [     main] runFlag를 false로 변경 시도
+         *  14:29:26:028 [     work] task 종료
+         *  14:29:26:029 [     main] runFlag = false
+         *  14:29:26:029 [     main] main 종료
          */
-        /* work 스레드 종료 안됨 */
+
     }
 }
 
-    //캐시 메모리의 runFlag 값만 변한다는 것이다! 메인 메모리에 이 값이 즉시 반영되지 않는다.
+    //성능을 약간 포기하는 대신에, 값을 읽을 때, 값을 쓸 때 모두 메인 메모리에 직접 접근하면
+    //된다.
+    //자바에서는 `volatile` 이라는 키워드로 이런 기능을 제공한다.
 
