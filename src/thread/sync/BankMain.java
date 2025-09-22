@@ -8,7 +8,9 @@ public class BankMain {
         //BankAccount account = new BankAccountV1(1000);
         //BankAccount account = new BankAccountV2(1000);
         //BankAccount account = new BankAccountV3(1000);
-        BankAccount account = new BankAccountV4(1000);
+        //BankAccount account = new BankAccountV4(1000);
+        //BankAccount account = new BankAccountV5(1000);
+        BankAccount account = new BankAccountV6(1000);
 
         Thread t1 = new Thread(new WithdrawTask(account, 800), "t1");
         Thread t2 = new Thread(new WithdrawTask(account, 800), "t2");
@@ -42,7 +44,7 @@ public class BankMain {
      */
 
     // 임계 영역은 가능환 최소한의 범위에 적용해야 한다. 그래야 동시에 여러 스레드가 실행할 수 있는 부분을 늘려서, 전체적인 처리 성능을 더 높일 수 있다
-    /**
+    /** lock.lock()
      *  06:23:32:712 [       t1] 거래 시작: BankAccountV4
      *  06:23:32:712 [       t2] 거래 시작: BankAccountV4
      *  06:23:32:739 [       t1] [검증 시작] 출금액: 800, 잔액: 1000
@@ -54,6 +56,30 @@ public class BankMain {
      *  06:23:33:744 [       t2] [검증 시작] 출금액: 800, 잔액: 200
      *  06:23:33:746 [       t2] [검증 실패] 출금액: 800, 잔액: 200
      *  06:23:33:752 [     main] 최종 잔액: 200
+     */
+
+    /** lock.tryLock()
+     * 06:34:42:888 [       t1] 거래 시작: BankAccountV5
+     *  06:34:42:888 [       t2] 거래 시작: BankAccountV5
+     *  06:34:42:896 [       t2] [진입 실패] 이미 처리중인 작업이 있습니다.
+     *  06:34:42:907 [       t1] [검증 시작] 출금액: 800, 잔액: 1000
+     *  06:34:42:908 [       t1] [검증 완료] 출금액: 800, 잔액: 1000
+     *  06:34:43:330 [     main] t1 state: TIMED_WAITING
+     *  06:34:43:330 [     main] t2 state: TERMINATED
+     *  06:34:43:913 [       t1] [출금 완료] 출금액: 800, 잔액: 200
+     *  06:34:43:914 [       t1] 거래 종료
+     */
+
+    /** lock.tryLock(500, TimeUnit.MICROSECONDS)
+     *  06:39:09:800 [       t2] 거래 시작: BankAccountV6
+     *  06:39:09:801 [       t1] 거래 시작: BankAccountV6
+     *  06:39:09:808 [       t1] [진입 실패] 이미 처리중인 작업이 있습니다.
+     *  06:39:09:819 [       t2] [검증 시작] 출금액: 800, 잔액: 1000
+     *  06:39:09:820 [       t2] [검증 완료] 출금액: 800, 잔액: 1000
+     *  06:39:10:260 [     main] t1 state: TERMINATED
+     *  06:39:10:261 [     main] t2 state: TIMED_WAITING
+     *  06:39:10:822 [       t2] [출금 완료] 출금액: 800, 잔액: 200
+     *  06:39:10:823 [       t2] 거래 종료
      */
 
 }
