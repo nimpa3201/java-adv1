@@ -11,11 +11,12 @@ public class BoundedMain {
         //BoundedQueue queue = new BoundedQueueV1(2);
         //BoundedQueue queue = new BoundedQueueV2(2);
         //BoundedQueue queue = new BoundedQueueV3(2);
-        BoundedQueue queue = new BoundedQueueV4(2);
+        //BoundedQueue queue = new BoundedQueueV4(2);
+        BoundedQueue queue = new BoundedQueueV5(2);
 
         // 2. 생산자, 소비자 실행 순서 선택, 반드시 하나만 선택!
-        producerFirst(queue); // 생산자 먼저 실행
-        //consumerFirst(queue); // 서비자 먼저 실행
+        //producerFirst(queue); // 생산자 먼저 실행
+        consumerFirst(queue); // 서비자 먼저 실행
 
 
     }
@@ -248,5 +249,90 @@ public class BoundedMain {
      *  20:09:35:861 [     main] producer2: TERMINATED
      *  20:09:35:861 [     main] producer3: TERMINATED
      *  20:09:35:862 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV4 ==
+     */
+
+    /**
+     *  20:37:22:336 [     main] == [생산자 먼저 실행] 시작, BoundedQueueV5 ==
+     *
+     *  20:37:22:341 [     main] 생산자 시작
+     *  20:37:22:356 [producer1] [생산 시도] data1 -> []
+     *  20:37:22:356 [producer1] [put] 생산자 데이터 저장, consumerCond.signal() 호출
+     *  20:37:22:357 [producer1] [생산 완료] data1 -> [data1]
+     *  20:37:22:451 [producer2] [생산 시도] data2 -> [data1]
+     *  20:37:22:451 [producer2] [put] 생산자 데이터 저장, consumerCond.signal() 호출
+     *  20:37:22:451 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  20:37:22:555 [producer3] [생산 시도] data3 -> [data1, data2]
+     *  20:37:22:555 [producer3] [put] 큐가 가득 참, 생산자 대기
+     *
+     *  20:37:22:656 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  20:37:22:657 [     main] producer1: TERMINATED
+     *  20:37:22:658 [     main] producer2: TERMINATED
+     *  20:37:22:658 [     main] producer3: WAITING
+     *
+     *  20:37:22:658 [     main] 소비자 시작
+     *  20:37:22:660 [consumer1] [소비 시도]     ? <-[data1, data2]
+     *  20:37:22:661 [consumer1] [take] 소비자 데이터 획득,  producerCond.signal() 호출
+     *  20:37:22:661 [consumer1] [소비 완료] data1<-[data2]
+     *  20:37:22:662 [producer3] [put] 생산자 깨어남
+     *  20:37:22:662 [producer3] [put] 생산자 데이터 저장, consumerCond.signal() 호출
+     *  20:37:22:662 [producer3] [생산 완료] data3 -> [data2, data3]
+     *  20:37:22:766 [consumer2] [소비 시도]     ? <-[data2, data3]
+     *  20:37:22:766 [consumer2] [take] 소비자 데이터 획득,  producerCond.signal() 호출
+     *  20:37:22:767 [consumer2] [소비 완료] data2<-[data3]
+     *  20:37:22:870 [consumer3] [소비 시도]     ? <-[data3]
+     *  20:37:22:870 [consumer3] [take] 소비자 데이터 획득,  producerCond.signal() 호출
+     *  20:37:22:872 [consumer3] [소비 완료] data3<-[]
+     *
+     *  20:37:22:971 [     main] 현재 상태 출력, 큐 데이터: []
+     *  20:37:22:971 [     main] producer1: TERMINATED
+     *  20:37:22:971 [     main] producer2: TERMINATED
+     *  20:37:22:972 [     main] producer3: TERMINATED
+     *  20:37:22:972 [     main] consumer1: TERMINATED
+     *  20:37:22:976 [     main] consumer2: TERMINATED
+     *  20:37:22:976 [     main] consumer3: TERMINATED
+     *  20:37:22:977 [     main] == [생산자 먼저 실행] 종료, BoundedQueueV5 ==
+     */
+
+    /**
+     * 20:38:16:022 [     main] == [소비자 먼저 실행] 시작, BoundedQueueV5 ==
+     *
+     *  20:38:16:031 [     main] 소비자 시작
+     *  20:38:16:050 [consumer1] [소비 시도]     ? <-[]
+     *  20:38:16:050 [consumer1] [take] 큐에 데이터가 없음, 소비자 대기
+     *  20:38:16:151 [consumer2] [소비 시도]     ? <-[]
+     *  20:38:16:152 [consumer2] [take] 큐에 데이터가 없음, 소비자 대기
+     *  20:38:16:256 [consumer3] [소비 시도]     ? <-[]
+     *  20:38:16:256 [consumer3] [take] 큐에 데이터가 없음, 소비자 대기
+     *
+     *  20:38:16:361 [     main] 현재 상태 출력, 큐 데이터: []
+     *  20:38:16:374 [     main] consumer1: WAITING
+     *  20:38:16:374 [     main] consumer2: WAITING
+     *  20:38:16:374 [     main] consumer3: WAITING
+     *
+     *  20:38:16:375 [     main] 생산자 시작
+     *  20:38:16:378 [producer1] [생산 시도] data1 -> []
+     *  20:38:16:378 [producer1] [put] 생산자 데이터 저장, consumerCond.signal() 호출
+     *  20:38:16:379 [producer1] [생산 완료] data1 -> [data1]
+     *  20:38:16:381 [consumer1] [take] 소비자 데이터 획득,  producerCond.signal() 호출
+     *  20:38:16:382 [consumer1] [소비 완료] data1<-[]
+     *  20:38:16:478 [producer2] [생산 시도] data2 -> []
+     *  20:38:16:480 [producer2] [put] 생산자 데이터 저장, consumerCond.signal() 호출
+     *  20:38:16:481 [producer2] [생산 완료] data2 -> [data2]
+     *  20:38:16:481 [consumer2] [take] 소비자 데이터 획득,  producerCond.signal() 호출
+     *  20:38:16:483 [consumer2] [소비 완료] data2<-[]
+     *  20:38:16:583 [producer3] [생산 시도] data3 -> []
+     *  20:38:16:583 [producer3] [put] 생산자 데이터 저장, consumerCond.signal() 호출
+     *  20:38:16:584 [consumer3] [take] 소비자 데이터 획득,  producerCond.signal() 호출
+     *  20:38:16:584 [producer3] [생산 완료] data3 -> [data3]
+     *  20:38:16:584 [consumer3] [소비 완료] data3<-[]
+     *
+     *  20:38:16:688 [     main] 현재 상태 출력, 큐 데이터: []
+     *  20:38:16:688 [     main] consumer1: TERMINATED
+     *  20:38:16:689 [     main] consumer2: TERMINATED
+     *  20:38:16:690 [     main] consumer3: TERMINATED
+     *  20:38:16:691 [     main] producer1: TERMINATED
+     *  20:38:16:691 [     main] producer2: TERMINATED
+     *  20:38:16:691 [     main] producer3: TERMINATED
+     *  20:38:16:692 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV5 ==
      */
 }
