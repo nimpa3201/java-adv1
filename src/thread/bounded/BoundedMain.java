@@ -10,11 +10,12 @@ public class BoundedMain {
         // 1. BoundedQueue 선택
         //BoundedQueue queue = new BoundedQueueV1(2);
         //BoundedQueue queue = new BoundedQueueV2(2);
-        BoundedQueue queue = new BoundedQueueV3(2);
+        //BoundedQueue queue = new BoundedQueueV3(2);
+        BoundedQueue queue = new BoundedQueueV4(2);
 
         // 2. 생산자, 소비자 실행 순서 선택, 반드시 하나만 선택!
-        //producerFirst(queue); // 생산자 먼저 실행
-        consumerFirst(queue); // 서비자 먼저 실행
+        producerFirst(queue); // 생산자 먼저 실행
+        //consumerFirst(queue); // 서비자 먼저 실행
 
 
     }
@@ -160,5 +161,92 @@ public class BoundedMain {
      *  06:34:06:873 [     main] producer2: TERMINATED
      *  06:34:06:873 [     main] producer3: TERMINATED
      *  06:34:06:874 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV3 ==
+     */
+
+    /**
+     *  20:07:33:017 [     main] == [생산자 먼저 실행] 시작, BoundedQueueV4 ==
+     *
+     *  20:07:33:030 [     main] 생산자 시작
+     *  20:07:33:066 [producer1] [생산 시도] data1 -> []
+     *  20:07:33:066 [producer1] [put] 생산자 데이터 저장, notify() 호출
+     *  20:07:33:067 [producer1] [생산 완료] data1 -> [data1]
+     *  20:07:33:171 [producer2] [생산 시도] data2 -> [data1]
+     *  20:07:33:171 [producer2] [put] 생산자 데이터 저장, notify() 호출
+     *  20:07:33:172 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  20:07:33:277 [producer3] [생산 시도] data3 -> [data1, data2]
+     *  20:07:33:278 [producer3] [put] 큐가 가득 참, 생산자 대기
+     *
+     *  20:07:33:382 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  20:07:33:383 [     main] producer1: TERMINATED
+     *  20:07:33:384 [     main] producer2: TERMINATED
+     *  20:07:33:384 [     main] producer3: WAITING
+     *
+     *  20:07:33:385 [     main] 소비자 시작
+     *  20:07:33:387 [consumer1] [소비 시도]     ? <-[data1, data2]
+     *  20:07:33:387 [consumer1] [take] 소비자 데이터 획득, notify() 호출
+     *  20:07:33:388 [producer3] [put] 생산자 깨어남
+     *  20:07:33:389 [producer3] [put] 생산자 데이터 저장, notify() 호출
+     *  20:07:33:389 [producer3] [생산 완료] data3 -> [data2, data3]
+     *  20:07:33:388 [consumer1] [소비 완료] data1<-[data2]
+     *  20:07:33:491 [consumer2] [소비 시도]     ? <-[data2, data3]
+     *  20:07:33:492 [consumer2] [take] 소비자 데이터 획득, notify() 호출
+     *  20:07:33:492 [consumer2] [소비 완료] data2<-[data3]
+     *  20:07:33:594 [consumer3] [소비 시도]     ? <-[data3]
+     *  20:07:33:594 [consumer3] [take] 소비자 데이터 획득, notify() 호출
+     *  20:07:33:595 [consumer3] [소비 완료] data3<-[]
+     *
+     *  20:07:33:698 [     main] 현재 상태 출력, 큐 데이터: []
+     *  20:07:33:700 [     main] producer1: TERMINATED
+     *  20:07:33:701 [     main] producer2: TERMINATED
+     *  20:07:33:704 [     main] producer3: TERMINATED
+     *  20:07:33:705 [     main] consumer1: TERMINATED
+     *  20:07:33:705 [     main] consumer2: TERMINATED
+     *  20:07:33:706 [     main] consumer3: TERMINATED
+     *  20:07:33:707 [     main] == [생산자 먼저 실행] 종료, BoundedQueueV4 ==
+     */
+
+    /**
+     * 20:09:35:201 [     main] == [소비자 먼저 실행] 시작, BoundedQueueV4 ==
+     *
+     *  20:09:35:211 [     main] 소비자 시작
+     *  20:09:35:220 [consumer1] [소비 시도]     ? <-[]
+     *  20:09:35:221 [consumer1] [take] 큐에 데이터가 없음, 소비자 대기
+     *  20:09:35:325 [consumer2] [소비 시도]     ? <-[]
+     *  20:09:35:326 [consumer2] [take] 큐에 데이터가 없음, 소비자 대기
+     *  20:09:35:428 [consumer3] [소비 시도]     ? <-[]
+     *  20:09:35:428 [consumer3] [take] 큐에 데이터가 없음, 소비자 대기
+     *
+     *  20:09:35:532 [     main] 현재 상태 출력, 큐 데이터: []
+     *  20:09:35:540 [     main] consumer1: WAITING
+     *  20:09:35:540 [     main] consumer2: WAITING
+     *  20:09:35:541 [     main] consumer3: WAITING
+     *
+     *  20:09:35:541 [     main] 생산자 시작
+     *  20:09:35:546 [producer1] [생산 시도] data1 -> []
+     *  20:09:35:547 [producer1] [put] 생산자 데이터 저장, notify() 호출
+     *  20:09:35:548 [producer1] [생산 완료] data1 -> [data1]
+     *  20:09:35:548 [consumer1] [take] 소비자 데이터 획득, notify() 호출
+     *  20:09:35:549 [consumer1] [소비 완료] data1<-[]
+     *  20:09:35:549 [consumer2] [take] 큐에 데이터가 없음, 소비자 대기
+     *  20:09:35:652 [producer2] [생산 시도] data2 -> []
+     *  20:09:35:653 [producer2] [put] 생산자 데이터 저장, notify() 호출
+     *  20:09:35:654 [producer2] [생산 완료] data2 -> [data2]
+     *  20:09:35:658 [consumer3] [take] 소비자 데이터 획득, notify() 호출
+     *  20:09:35:659 [consumer3] [소비 완료] data2<-[]
+     *  20:09:35:660 [consumer2] [take] 큐에 데이터가 없음, 소비자 대기
+     *  20:09:35:757 [producer3] [생산 시도] data3 -> []
+     *  20:09:35:758 [producer3] [put] 생산자 데이터 저장, notify() 호출
+     *  20:09:35:758 [producer3] [생산 완료] data3 -> [data3]
+     *  20:09:35:758 [consumer2] [take] 소비자 데이터 획득, notify() 호출
+     *  20:09:35:759 [consumer2] [소비 완료] data3<-[]
+     *
+     *  20:09:35:859 [     main] 현재 상태 출력, 큐 데이터: []
+     *  20:09:35:859 [     main] consumer1: TERMINATED
+     *  20:09:35:860 [     main] consumer2: TERMINATED
+     *  20:09:35:860 [     main] consumer3: TERMINATED
+     *  20:09:35:861 [     main] producer1: TERMINATED
+     *  20:09:35:861 [     main] producer2: TERMINATED
+     *  20:09:35:861 [     main] producer3: TERMINATED
+     *  20:09:35:862 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV4 ==
      */
 }
