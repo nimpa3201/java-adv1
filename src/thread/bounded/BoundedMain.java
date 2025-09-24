@@ -12,7 +12,8 @@ public class BoundedMain {
         //BoundedQueue queue = new BoundedQueueV2(2);
         //BoundedQueue queue = new BoundedQueueV3(2);
         //BoundedQueue queue = new BoundedQueueV4(2);
-        BoundedQueue queue = new BoundedQueueV5(2);
+        //BoundedQueue queue = new BoundedQueueV5(2);
+        BoundedQueue queue = new BoundedQueueV6_1(2);
 
         // 2. 생산자, 소비자 실행 순서 선택, 반드시 하나만 선택!
         //producerFirst(queue); // 생산자 먼저 실행
@@ -334,5 +335,73 @@ public class BoundedMain {
      *  20:38:16:691 [     main] producer2: TERMINATED
      *  20:38:16:691 [     main] producer3: TERMINATED
      *  20:38:16:692 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV5 ==
+     */
+
+    /**
+     * 21:45:17:152 [     main] == [생산자 먼저 실행] 시작, BoundedQueueV6_1 ==
+     *
+     *  21:45:17:161 [     main] 생산자 시작
+     *  21:45:17:181 [producer1] [생산 시도] data1 -> []
+     *  21:45:17:182 [producer1] [생산 완료] data1 -> [data1]
+     *  21:45:17:285 [producer2] [생산 시도] data2 -> [data1]
+     *  21:45:17:285 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  21:45:17:388 [producer3] [생산 시도] data3 -> [data1, data2]
+     *
+     *  21:45:17:493 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  21:45:17:495 [     main] producer1: TERMINATED
+     *  21:45:17:495 [     main] producer2: TERMINATED
+     *  21:45:17:496 [     main] producer3: WAITING
+     *
+     *  21:45:17:496 [     main] 소비자 시작
+     *  21:45:17:499 [consumer1] [소비 시도]     ? <-[data1, data2]
+     *  21:45:17:501 [consumer1] [소비 완료] data1<-[data2]
+     *  21:45:17:504 [producer3] [생산 완료] data3 -> [data2, data3]
+     *  21:45:17:604 [consumer2] [소비 시도]     ? <-[data2, data3]
+     *  21:45:17:605 [consumer2] [소비 완료] data2<-[data3]
+     *  21:45:17:709 [consumer3] [소비 시도]     ? <-[data3]
+     *  21:45:17:710 [consumer3] [소비 완료] data3<-[]
+     *
+     *  21:45:17:812 [     main] 현재 상태 출력, 큐 데이터: []
+     *  21:45:17:812 [     main] producer1: TERMINATED
+     *  21:45:17:813 [     main] producer2: TERMINATED
+     *  21:45:17:814 [     main] producer3: TERMINATED
+     *  21:45:17:814 [     main] consumer1: TERMINATED
+     *  21:45:17:815 [     main] consumer2: TERMINATED
+     *  21:45:17:815 [     main] consumer3: TERMINATED
+     *  21:45:17:816 [     main] == [생산자 먼저 실행] 종료, BoundedQueueV6_1 ==
+     */
+
+    /**
+     * 21:46:15:169 [     main] == [소비자 먼저 실행] 시작, BoundedQueueV6_1 ==
+     *
+     *  21:46:15:175 [     main] 소비자 시작
+     *  21:46:15:184 [consumer1] [소비 시도]     ? <-[]
+     *  21:46:15:286 [consumer2] [소비 시도]     ? <-[]
+     *  21:46:15:387 [consumer3] [소비 시도]     ? <-[]
+     *
+     *  21:46:15:492 [     main] 현재 상태 출력, 큐 데이터: []
+     *  21:46:15:501 [     main] consumer1: WAITING
+     *  21:46:15:502 [     main] consumer2: WAITING
+     *  21:46:15:502 [     main] consumer3: WAITING
+     *
+     *  21:46:15:503 [     main] 생산자 시작
+     *  21:46:15:505 [producer1] [생산 시도] data1 -> []
+     *  21:46:15:506 [producer1] [생산 완료] data1 -> [data1]
+     *  21:46:15:506 [consumer1] [소비 완료] data1<-[]
+     *  21:46:15:609 [producer2] [생산 시도] data2 -> []
+     *  21:46:15:610 [producer2] [생산 완료] data2 -> [data2]
+     *  21:46:15:611 [consumer2] [소비 완료] data2<-[]
+     *  21:46:15:711 [producer3] [생산 시도] data3 -> []
+     *  21:46:15:712 [consumer3] [소비 완료] data3<-[]
+     *  21:46:15:712 [producer3] [생산 완료] data3 -> [data3]
+     *
+     *  21:46:15:812 [     main] 현재 상태 출력, 큐 데이터: []
+     *  21:46:15:812 [     main] consumer1: TERMINATED
+     *  21:46:15:813 [     main] consumer2: TERMINATED
+     *  21:46:15:813 [     main] consumer3: TERMINATED
+     *  21:46:15:813 [     main] producer1: TERMINATED
+     *  21:46:15:814 [     main] producer2: TERMINATED
+     *  21:46:15:814 [     main] producer3: TERMINATED
+     *  21:46:15:815 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV6_1 ==
      */
 }
