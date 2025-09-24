@@ -13,7 +13,10 @@ public class BoundedMain {
         //BoundedQueue queue = new BoundedQueueV3(2);
         //BoundedQueue queue = new BoundedQueueV4(2);
         //BoundedQueue queue = new BoundedQueueV5(2);
-        BoundedQueue queue = new BoundedQueueV6_1(2);
+        //BoundedQueue queue = new BoundedQueueV6_1(2);
+        //BoundedQueue queue = new BoundedQueueV6_2(2);
+        //BoundedQueue queue = new BoundedQueueV6_3(2);
+        BoundedQueue queue = new BoundedQueueV6_4(2);
 
         // 2. 생산자, 소비자 실행 순서 선택, 반드시 하나만 선택!
         //producerFirst(queue); // 생산자 먼저 실행
@@ -403,5 +406,248 @@ public class BoundedMain {
      *  21:46:15:814 [     main] producer2: TERMINATED
      *  21:46:15:814 [     main] producer3: TERMINATED
      *  21:46:15:815 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV6_1 ==
+     */
+
+    /**
+     *  03:40:03:099 [     main] == [생산자 먼저 실행] 시작, BoundedQueueV6_2 ==
+     *
+     *  03:40:03:106 [     main] 생산자 시작
+     *  03:40:03:125 [producer1] [생산 시도] data1 -> []
+     *  03:40:03:126 [producer1] 저장 시도 결과 = true
+     *  03:40:03:127 [producer1] [생산 완료] data1 -> [data1]
+     *  03:40:03:216 [producer2] [생산 시도] data2 -> [data1]
+     *  03:40:03:217 [producer2] 저장 시도 결과 = true
+     *  03:40:03:217 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  03:40:03:320 [producer3] [생산 시도] data3 -> [data1, data2]
+     *  03:40:03:321 [producer3] 저장 시도 결과 = false
+     *  03:40:03:321 [producer3] [생산 완료] data3 -> [data1, data2]
+     *
+     *  03:40:03:425 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  03:40:03:431 [     main] producer1: TERMINATED
+     *  03:40:03:432 [     main] producer2: TERMINATED
+     *  03:40:03:437 [     main] producer3: TERMINATED
+     *
+     *  03:40:03:438 [     main] 소비자 시작
+     *  03:40:03:443 [consumer1] [소비 시도]     ? <-[data1, data2]
+     *  03:40:03:444 [consumer1] [소비 완료] data1<-[data2]
+     *  03:40:03:547 [consumer2] [소비 시도]     ? <-[data2]
+     *  03:40:03:548 [consumer2] [소비 완료] data2<-[]
+     *  03:40:03:648 [consumer3] [소비 시도]     ? <-[]
+     *  03:40:03:649 [consumer3] [소비 완료] null<-[]
+     *
+     *  03:40:03:755 [     main] 현재 상태 출력, 큐 데이터: []
+     *  03:40:03:760 [     main] producer1: TERMINATED
+     *  03:40:03:762 [     main] producer2: TERMINATED
+     *  03:40:03:763 [     main] producer3: TERMINATED
+     *  03:40:03:763 [     main] consumer1: TERMINATED
+     *  03:40:03:764 [     main] consumer2: TERMINATED
+     *  03:40:03:765 [     main] consumer3: TERMINATED
+     *  03:40:03:766 [     main] == [생산자 먼저 실행] 종료, BoundedQueueV6_2 ==
+     */
+
+    /**
+     *  03:41:01:940 [     main] == [소비자 먼저 실행] 시작, BoundedQueueV6_2 ==
+     *
+     *  03:41:01:946 [     main] 소비자 시작
+     *  03:41:01:956 [consumer1] [소비 시도]     ? <-[]
+     *  03:41:01:966 [consumer1] [소비 완료] null<-[]
+     *  03:41:02:058 [consumer2] [소비 시도]     ? <-[]
+     *  03:41:02:058 [consumer2] [소비 완료] null<-[]
+     *  03:41:02:160 [consumer3] [소비 시도]     ? <-[]
+     *  03:41:02:162 [consumer3] [소비 완료] null<-[]
+     *
+     *  03:41:02:261 [     main] 현재 상태 출력, 큐 데이터: []
+     *  03:41:02:262 [     main] consumer1: TERMINATED
+     *  03:41:02:262 [     main] consumer2: TERMINATED
+     *  03:41:02:263 [     main] consumer3: TERMINATED
+     *
+     *  03:41:02:264 [     main] 생산자 시작
+     *  03:41:02:269 [producer1] [생산 시도] data1 -> []
+     *  03:41:02:271 [producer1] 저장 시도 결과 = true
+     *  03:41:02:272 [producer1] [생산 완료] data1 -> [data1]
+     *  03:41:02:374 [producer2] [생산 시도] data2 -> [data1]
+     *  03:41:02:375 [producer2] 저장 시도 결과 = true
+     *  03:41:02:375 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  03:41:02:480 [producer3] [생산 시도] data3 -> [data1, data2]
+     *  03:41:02:481 [producer3] 저장 시도 결과 = false
+     *  03:41:02:481 [producer3] [생산 완료] data3 -> [data1, data2]
+     *
+     *  03:41:02:583 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  03:41:02:583 [     main] consumer1: TERMINATED
+     *  03:41:02:584 [     main] consumer2: TERMINATED
+     *  03:41:02:585 [     main] consumer3: TERMINATED
+     *  03:41:02:585 [     main] producer1: TERMINATED
+     *  03:41:02:587 [     main] producer2: TERMINATED
+     *  03:41:02:588 [     main] producer3: TERMINATED
+     *  03:41:02:589 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV6_2 ==
+     */
+
+    /**
+     *  03:46:24:744 [     main] == [생산자 먼저 실행] 시작, BoundedQueueV6_3 ==
+     *
+     *  03:46:24:758 [     main] 생산자 시작
+     *  03:46:24:779 [producer1] [생산 시도] data1 -> []
+     *  03:46:24:780 [producer1] 저장 시도 결과 = true
+     *  03:46:24:781 [producer1] [생산 완료] data1 -> [data1]
+     *  03:46:24:882 [producer2] [생산 시도] data2 -> [data1]
+     *  03:46:24:882 [producer2] 저장 시도 결과 = true
+     *  03:46:24:883 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  03:46:24:984 [producer3] [생산 시도] data3 -> [data1, data2]
+     *  03:46:24:984 [producer3] 저장 시도 결과 = false
+     *  03:46:24:985 [producer3] [생산 완료] data3 -> [data1, data2]
+     *
+     *  03:46:25:088 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  03:46:25:089 [     main] producer1: TERMINATED
+     *  03:46:25:090 [     main] producer2: TERMINATED
+     *  03:46:25:090 [     main] producer3: TERMINATED
+     *
+     *  03:46:25:091 [     main] 소비자 시작
+     *  03:46:25:093 [consumer1] [소비 시도]     ? <-[data1, data2]
+     *  03:46:25:094 [consumer1] [소비 완료] data1<-[data2]
+     *  03:46:25:196 [consumer2] [소비 시도]     ? <-[data2]
+     *  03:46:25:197 [consumer2] [소비 완료] data2<-[]
+     *  03:46:25:299 [consumer3] [소비 시도]     ? <-[]
+     *
+     *  03:46:25:403 [     main] 현재 상태 출력, 큐 데이터: []
+     *  03:46:25:405 [     main] producer1: TERMINATED
+     *  03:46:25:405 [     main] producer2: TERMINATED
+     *  03:46:25:406 [     main] producer3: TERMINATED
+     *  03:46:25:407 [     main] consumer1: TERMINATED
+     *  03:46:25:407 [     main] consumer2: TERMINATED
+     *  03:46:25:408 [     main] consumer3: TIMED_WAITING
+     *  03:46:25:408 [     main] == [생산자 먼저 실행] 종료, BoundedQueueV6_3 ==
+     *  03:46:27:300 [consumer3] [소비 완료] null<-[]
+     */
+
+    /**
+     *  03:47:57:564 [     main] == [소비자 먼저 실행] 시작, BoundedQueueV6_3 ==
+     *
+     *  03:47:57:571 [     main] 소비자 시작
+     *  03:47:57:585 [consumer1] [소비 시도]     ? <-[]
+     *  03:47:57:689 [consumer2] [소비 시도]     ? <-[]
+     *  03:47:57:791 [consumer3] [소비 시도]     ? <-[]
+     *
+     *  03:47:57:891 [     main] 현재 상태 출력, 큐 데이터: []
+     *  03:47:57:902 [     main] consumer1: TIMED_WAITING
+     *  03:47:57:903 [     main] consumer2: TIMED_WAITING
+     *  03:47:57:904 [     main] consumer3: TIMED_WAITING
+     *
+     *  03:47:57:904 [     main] 생산자 시작
+     *  03:47:57:908 [producer1] [생산 시도] data1 -> []
+     *  03:47:57:910 [producer1] 저장 시도 결과 = true
+     *  03:47:57:910 [producer1] [생산 완료] data1 -> [data1]
+     *  03:47:57:911 [consumer1] [소비 완료] data1<-[]
+     *  03:47:58:008 [producer2] [생산 시도] data2 -> []
+     *  03:47:58:009 [producer2] 저장 시도 결과 = true
+     *  03:47:58:010 [producer2] [생산 완료] data2 -> []
+     *  03:47:58:009 [consumer2] [소비 완료] data2<-[]
+     *  03:47:58:113 [producer3] [생산 시도] data3 -> []
+     *  03:47:58:113 [consumer3] [소비 완료] data3<-[]
+     *  03:47:58:113 [producer3] 저장 시도 결과 = true
+     *  03:47:58:115 [producer3] [생산 완료] data3 -> []
+     *
+     *  03:47:58:217 [     main] 현재 상태 출력, 큐 데이터: []
+     *  03:47:58:217 [     main] consumer1: TERMINATED
+     *  03:47:58:218 [     main] consumer2: TERMINATED
+     *  03:47:58:218 [     main] consumer3: TERMINATED
+     *  03:47:58:219 [     main] producer1: TERMINATED
+     *  03:47:58:219 [     main] producer2: TERMINATED
+     *  03:47:58:219 [     main] producer3: TERMINATED
+     *  03:47:58:220 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV6_3 ==
+     */
+
+
+    /**
+     * 03:52:21:537 [     main] == [생산자 먼저 실행] 시작, BoundedQueueV6_4 ==
+     *
+     *  03:52:21:543 [     main] 생산자 시작
+     *  03:52:21:561 [producer1] [생산 시도] data1 -> []
+     *  03:52:21:562 [producer1] [생산 완료] data1 -> [data1]
+     *  03:52:21:655 [producer2] [생산 시도] data2 -> [data1]
+     *  03:52:21:655 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  03:52:21:762 [producer3] [생산 시도] data3 -> [data1, data2]
+     * Exception in thread "producer3" java.lang.IllegalStateException: Queue full
+     * 	at java.base/java.util.AbstractQueue.add(AbstractQueue.java:98)
+     * 	at java.base/java.util.concurrent.ArrayBlockingQueue.add(ArrayBlockingQueue.java:329)
+     * 	at thread.bounded.BoundedQueueV6_4.put(BoundedQueueV6_4.java:19)
+     * 	at thread.bounded.ProducerTask.run(ProducerTask.java:18)
+     * 	at java.base/java.lang.Thread.run(Thread.java:1583)
+     *
+     *  03:52:21:867 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  03:52:21:868 [     main] producer1: TERMINATED
+     *  03:52:21:870 [     main] producer2: TERMINATED
+     *  03:52:21:871 [     main] producer3: TERMINATED
+     *
+     *  03:52:21:871 [     main] 소비자 시작
+     *  03:52:21:881 [consumer1] [소비 시도]     ? <-[data1, data2]
+     *  03:52:21:882 [consumer1] [소비 완료] data1<-[data2]
+     *  03:52:21:984 [consumer2] [소비 시도]     ? <-[data2]
+     *  03:52:21:985 [consumer2] [소비 완료] data2<-[]
+     *  03:52:22:084 [consumer3] [소비 시도]     ? <-[]
+     * Exception in thread "consumer3" java.util.NoSuchElementException
+     * 	at java.base/java.util.AbstractQueue.remove(AbstractQueue.java:117)
+     * 	at thread.bounded.BoundedQueueV6_4.take(BoundedQueueV6_4.java:24)
+     * 	at thread.bounded.ConsumerTask.run(ConsumerTask.java:16)
+     * 	at java.base/java.lang.Thread.run(Thread.java:1583)
+     *
+     *  03:52:22:189 [     main] 현재 상태 출력, 큐 데이터: []
+     *  03:52:22:189 [     main] producer1: TERMINATED
+     *  03:52:22:190 [     main] producer2: TERMINATED
+     *  03:52:22:190 [     main] producer3: TERMINATED
+     *  03:52:22:191 [     main] consumer1: TERMINATED
+     *  03:52:22:191 [     main] consumer2: TERMINATED
+     *  03:52:22:192 [     main] consumer3: TERMINATED
+     *  03:52:22:193 [     main] == [생산자 먼저 실행] 종료, BoundedQueueV6_4 ==
+     */
+
+    /**
+     * 03:52:54:542 [     main] == [소비자 먼저 실행] 시작, BoundedQueueV6_4 ==
+     *
+     *  03:52:54:550 [     main] 소비자 시작
+     *  03:52:54:560 [consumer1] [소비 시도]     ? <-[]
+     * Exception in thread "consumer1" java.util.NoSuchElementException
+     * 	at java.base/java.util.AbstractQueue.remove(AbstractQueue.java:117)
+     * 	at thread.bounded.BoundedQueueV6_4.take(BoundedQueueV6_4.java:24)
+     * 	at thread.bounded.ConsumerTask.run(ConsumerTask.java:16)
+     * 	at java.base/java.lang.Thread.run(Thread.java:1583)
+     *  03:52:54:661 [consumer2] [소비 시도]     ? <-[]
+     * Exception in thread "consumer2" java.util.NoSuchElementException
+     * 	at java.base/java.util.AbstractQueue.remove(AbstractQueue.java:117)
+     * 	at thread.bounded.BoundedQueueV6_4.take(BoundedQueueV6_4.java:24)
+     * 	at thread.bounded.ConsumerTask.run(ConsumerTask.java:16)
+     * 	at java.base/java.lang.Thread.run(Thread.java:1583)
+     *  03:52:54:766 [consumer3] [소비 시도]     ? <-[]
+     * Exception in thread "consumer3" java.util.NoSuchElementException
+     * 	at java.base/java.util.AbstractQueue.remove(AbstractQueue.java:117)
+     * 	at thread.bounded.BoundedQueueV6_4.take(BoundedQueueV6_4.java:24)
+     * 	at thread.bounded.ConsumerTask.run(ConsumerTask.java:16)
+     * 	at java.base/java.lang.Thread.run(Thread.java:1583)
+     *
+     *  03:52:54:871 [     main] 현재 상태 출력, 큐 데이터: []
+     *  03:52:54:882 [     main] consumer1: TERMINATED
+     *  03:52:54:883 [     main] consumer2: TERMINATED
+     *  03:52:54:883 [     main] consumer3: TERMINATED
+     *
+     *  03:52:54:884 [     main] 생산자 시작
+     *  03:52:54:887 [producer1] [생산 시도] data1 -> []
+     *  03:52:54:889 [producer1] [생산 완료] data1 -> [data1]
+     *  03:52:54:993 [producer2] [생산 시도] data2 -> [data1]
+     *  03:52:54:994 [producer2] [생산 완료] data2 -> [data1, data2]
+     *  03:52:55:097 [producer3] [생산 시도] data3 -> [data1, data2]
+     * Exception in thread "producer3" java.lang.IllegalStateException: Queue full
+     * 	at java.base/java.util.AbstractQueue.add(AbstractQueue.java:98)
+     * 	at java.base/java.util.concurrent.ArrayBlockingQueue.add(ArrayBlockingQueue.java:329)
+     * 	at thread.bounded.BoundedQueueV6_4.put(BoundedQueueV6_4.java:19)
+     * 	at thread.bounded.ProducerTask.run(ProducerTask.java:18)
+     * 	at java.base/java.lang.Thread.run(Thread.java:1583)
+     *
+     *  03:52:55:201 [     main] 현재 상태 출력, 큐 데이터: [data1, data2]
+     *  03:52:55:202 [     main] consumer1: TERMINATED
+     *  03:52:55:203 [     main] consumer2: TERMINATED
+     *  03:52:55:203 [     main] consumer3: TERMINATED
+     *  03:52:55:206 [     main] producer1: TERMINATED
+     *  03:52:55:206 [     main] producer2: TERMINATED
+     *  03:52:55:209 [     main] producer3: TERMINATED
+     *  03:52:55:210 [     main] == [소비자 먼저 실행] 종료, BoundedQueueV6_4 ==
      */
 }
