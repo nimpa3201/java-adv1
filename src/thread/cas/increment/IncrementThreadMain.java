@@ -11,6 +11,7 @@ public class IncrementThreadMain {
         test(new BasicInteger());
         test(new VolatileInteger());
         test(new SyncInteger());
+        test(new MyAtomicInteger());
 
     }
 
@@ -44,6 +45,7 @@ public class IncrementThreadMain {
          * BasicInteger: 993
          * VolatileInteger: 996
          * SyncInteger: 1000
+         * MyAtomicInteger: 1000
          */
     }
 
