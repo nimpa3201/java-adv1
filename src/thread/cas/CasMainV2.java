@@ -1,4 +1,4 @@
-package thread.cas.increment;
+package thread.cas;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
