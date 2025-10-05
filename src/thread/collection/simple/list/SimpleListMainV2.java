@@ -4,7 +4,8 @@ import static util.MyLogger.log;
 
 public class SimpleListMainV2 {
     public static void main(String[] args) throws InterruptedException {
-        test(new BasicList());
+        //test(new BasicList());
+        test(new SyncList());
     }
 
     private static void test(SimpleList list) throws InterruptedException {
@@ -38,7 +39,7 @@ public class SimpleListMainV2 {
         thread2.join();
         log(list);
     }
-    /**
+    /** test(new BasicList());
      *  07:36:10:093 [     main] BasicList
      *  07:36:10:207 [ Thread-1] Thread-1 : list.add(A)
      *  07:36:10:207 [ Thread-2] Thread-2 : list.add(B)
@@ -48,5 +49,12 @@ public class SimpleListMainV2 {
     /**
      * 컬렉션 프레임워크 대부분은 스레드 세이프 하지 않음
      * add()와 같은 연산은 마치원자적인 연산처럼 느껴지지만 내부에서는 수 많은 연산들이 함께 사용됌
+     */
+
+    /** test(new SyncList());
+     *  07:44:15:882 [     main] SyncList
+     *  07:44:15:995 [ Thread-1] Thread-1 : list.add(A)
+     *  07:44:16:100 [ Thread-2] Thread-2 : list.add(B)
+     *  07:44:16:100 [     main] [A, B] size =2 ,capacity=5
      */
 }
