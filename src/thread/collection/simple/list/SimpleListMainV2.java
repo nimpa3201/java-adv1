@@ -5,7 +5,8 @@ import static util.MyLogger.log;
 public class SimpleListMainV2 {
     public static void main(String[] args) throws InterruptedException {
         //test(new BasicList());
-        test(new SyncList());
+        //test(new SyncList());
+        test(new SyncProxyList(new BasicList()));
     }
 
     private static void test(SimpleList list) throws InterruptedException {
@@ -56,5 +57,12 @@ public class SimpleListMainV2 {
      *  07:44:15:995 [ Thread-1] Thread-1 : list.add(A)
      *  07:44:16:100 [ Thread-2] Thread-2 : list.add(B)
      *  07:44:16:100 [     main] [A, B] size =2 ,capacity=5
+     */
+
+    /** test(new SyncProxyList(new BasicList()));
+     *  13:58:26:993 [     main] SyncProxyList
+     *  13:58:27:112 [ Thread-1] Thread-1 : list.add(A)
+     *  13:58:27:217 [ Thread-2] Thread-2 : list.add(B)
+     *  13:58:27:218 [     main] [A, B] size =2 ,capacity=5 by SyncProxyList
      */
 }
